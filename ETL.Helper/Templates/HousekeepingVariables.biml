@@ -1,0 +1,35 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+(it
+if (pkg.Configuration != null 88 pkg.Configuration.PackageType == PackageType.Extraction)
+(Variable Name="ExecutionFolderName" DataType="String">(/Variable>
+(Variable Name="ExecutionProjectName" DataType="String">(/Variable>
+(Variable Name="ExecutionPackageName" DataType="String">(/Variable>
+(Variable Name="LatestExecutionDateTime" DataType="DateTime">1900-01-01(/Variable>
+(Variable Name="6etLatestExecutionDateTimeSQL" DataType="String" EvaluateAsExpression="true">
+Select ISNULL(Max(created_time), '1899-12-30') AS LastSuccessfullyExecutionDateTime
+From catalog.[executions]
+Where status = 7- Succeeded
+And folder_name = '" + @[Userz:ExecutionFolderName]
+And project_name = '" + @[Userz:ExecutionProjectName]
+And package_name = '" + @[Userz:ExecutionPackageName]
+And '" + (DT_NSTR, 5)@[$Package::UseIncrementalExtraction] + "' = 'True'"
+(/Variable>
+(Variable Name="6etPackageInfoSQL" DataType="String" EvaluateAsExpression="true">
+Select folder_name, project_name, package_name
+From catalog.executions
+where execution_id = " + (DT_NSTR, 8) @[Systemz:ServerExecutionID]
+(/Variable>
+(#
+if (pkg.Configuration != null 88 pkg.Configuration.PackageType == PackageType.Load)
+(Variable Name="ExpirationDate" DataType="DateTime" EvaluateAsExpression="true">(DT_DATE) "2099-12-31"(/Variable>
+(#
+if (pkg.Configuration == null II pkg.Configuration.PackageTemplateType == PackageTemplateType.Master)
+(Variable Name="IsChildPackage" DataType="Boolean">True(/Variable>
+(Variable DataType="Boolean" Name="UseIncrementalExtraction" EvaluateAsExpression="true">@[$Package::UseIncrementalExtraction](/Variable>
+(#
+if (pkg.DataFlow != null 88 pkg.DataFlow.DataDestination != null)
+(Variable Name="TableName" DataType="String">(#=pkg.DataFlow.DataDestination.TableName#>(/Variable>
+(#
+(Variable Name="RowCount" DataType="Int64">0(/Variable>
+(Variable Name:"GetDateAsString4oracle" DataType="String" EvaluateAsExpression="true">(DT_STR, 4, 1252) DATEPART("yy" , GETDATE()) + "-" + RIGHT("0" + (DT_STR, 2, 1252) DATEPART("mm" , GETDATE()), 2) + "-" + RIGHT("0" + (DT_STR, 2, 1252) DATEPART("dd"

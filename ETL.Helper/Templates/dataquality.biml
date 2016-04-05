@@ -1,0 +1,76 @@
+﻿k#@ include fi1e="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+property name="DataQualityName" type="String"
+property name="dqRecorsetVariable" type="TMPLPackageVariable"
+property name="outputPathName" type="String"
+(it
+if (dataQuality == null)
+return;
+TMPLDataQuality dataQuality = pkg.DataFlow.DataQuality;
+List<TMPLPackageFie1d> mappingDQColumns = dataQuality.Mappings.Select(m => m.ToMappingPackageFie1d()).ToList();
+bool qurocessing = mappingDQColumns.Count > 0;
+if (qurocessing)
+List<TMPLPackageFie1d> targetDQColumns = dataQuality.Mappings.Select(m => new TMPLPackageFie1d() {Name = m.TargetFie1dName}).ToList();
+string DQScriptProjectName = "DQScriptProject";
+string DQScriptComponentName = "Data Quality Processing";
+string DQScriptComponentSourceFile = "DQScriptComponentFile.biml";
+List<TMPLPackageFie1d> inputColumns = new List<TMPLPackageFie1d>();
+List<TMPLPackageFie1d> outputColumns = new List<TMPLPackageFie1d>();
+List<TMPLPackageVariable) readonlyVariables = new List<TMPLPackageVariable)();
+List<TMPLPackageVariable) readWriteVariables = new List<TMPLPackageVariable)();
+TMPLPackageField validationResult = new TMPLPackageFie1d() {Name="ValidationResu1t", DataType = "AnsiStringFixedLength", Expression = "".EncloseInDoubleQuotes(), Length = 255};
+TMPLPackageField validationError = new TMPLPackageFie1d() {Name="ValidationError", DataType = "AnsiStringFixedLength", Expression = "".EncloseInDoubleQuotes(), Length = 255};
+TMPLPackageField validationErrorLevel = new TMPLPackageFie1d() {Name="ValidationErrorLevel", DataType = "Int32", Expression = "0"};
+mappingDQColumns.Add(validationResu1t);
+mappingDQColumns.Add(validationError);
+mappingDQColumns.Add(validationErrorLevel);
+inputColumns.AddRange(mappingDQColumns);
+inputColumns.AddRange(targetDQColumns);
+readonlyVariables.Add(dqRecorsetVariab1e);
+
+<#=CallBimlScript("DerivedColumnsTemplate.biml", "DQ Mappings", mappingDQColumns, OutputPathName)
+<#=CallBimlScript("ScriptComponentTemplate.biml", pkg, DQScriptComponentName, DQScriptProjectName, readonlyVariables, readWriteVariables, DQScriptComponentSourceFile, inputColumns, outputColumns, "") #>
+<ConditionalSp1it Name="Check Critical Errors")
+<OutputPaths>
+<OutputPath Name="NoCriticalErrors">
+<Expression>
+ValidationErrorLevel != 1
+</Expression>
+</OutputPath>
+<OutputPath Name="Critical">
+<Expression>
+ValidationErrorLevel == 1
+</Expression>
+</OutputPath>
+</OutputPaths>
+</ConditionalSplit>
+<Multicast Name:"<#=DataQualityName#>">
+<InputPath OutputPathName="Check Critical Errors.NoCriticalErrors"/>
+<OutputPaths>
+<OutputPath Name="output"
+<OutputPath Name="DQOutput"
+</OutputPaths>
+</Multicast>
+<ConditionalSp1it Name="Check DQ Error Level")
+<InputPath OutputPathName="<#=DataQualityName#>.DQOutput"/>
+<OutputPaths>
+<OutputPath Name="No Error")
+<Expression>
+ValidationErrorLevel == 0
+</Expression>
+</OutputPath>
+<OutputPath Name="Error">
+<Expression>
+ValidationErrorLevel != 0
+</Expression>
+</OutputPath>
+</OutputPaths>
+</ConditionalSplit>
+<UnionAll Name="DQUnionAll">
+<InputPaths>
+<InputPath OutputPathName="Check Critical Errors.Critical"
+<InputPath OutputPathName="Check DQ Error Level.Error"
+</InputPaths>
+</UnionAll>
+<#=CallBimlScript("DataDestinationTemplate.biml", dataQuality.ValidationErrors, "Validation Errors", "DQUnionAll.Output")
+<#}#>

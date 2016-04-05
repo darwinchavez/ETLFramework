@@ -1,0 +1,20 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+property name="houseKeepingColumnsName" type="String"
+property name="outputPathName" type="String"
+<#
+List<TMPLPackageField> HouseKeepingColumns = new List<TMPLPackageField>();
+HouseKeepingColumns.Add(new TMPLPackageField() {Name= Constants.TABLENAME_FIELDNAME, DataType = "String", Expression = "@[UserzzTableName]", Length = 255]
+HouseKeepingColumns.Add(new TMPLPackageField() {Name= Constants.EXECUTIONID_FIELDNAME, DataType = "Int64", Expression = "@[Systemz:ServerExecutionID]"});
+HouseKeepingColumns.Add(new TMPLPackageField() {Name= Constants.RONLOADDATE_FIELDNAME, DataType = "DateTime", Expression = "(DT_DBTIMESTAMP)GETDATE()"});
+Load Packages
+if (pkg.Configuration.PackageType == PackageType.Load)
+
+HouseKeepingColumns.Add(new TMPLPackageField() {Name= Constants.EFFECTIVE_FIELDNAME, DataType = "Date", Expression = "GETDATE()"});
+HouseKeepingColumns.Add(new TMPLPackageField() {Name= Constants.EXPIRATIONDATE_FIELDNAME, DataType = "Date", Expression = "@[Userz:ExpirationDate]"});
+
+if (pkg.DataFlow.AdditionalflouseKeepingColumns != null)
+
+HouseKeepingColumns.AddRange(pkg.DataFlow.AdditionalflouseKeepingColumns);
+
+<#=CallBimIScript("DerivedColumnsTemplate.biml", houseKeepingColumnsName, HouseKeepingColumns, OutputPathName)

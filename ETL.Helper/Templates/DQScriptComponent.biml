@@ -1,0 +1,32 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+(File Path="main.cs">
+region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using System.Linq;
+using CFC.ETL.Helper;
+using CFC.ETL.Helper.Model;
+using System.Collections.Generic;
+endregion
+[Microsoft.SqlServer.Dts.Pipeline.SSISScriptComponentEntryPointAttribute]
+public class ScriptMain : UserComponent
+
+DataTable expressionsTable = null;
+public override void PreExecute()
+
+base.PreExecute();
+var expressionsRS = this.ReadOnlyVariables["DQExpressionsRecordSet"].Value;
+expressionsTable = Helper.RecordsetZDataTable(expressionsRS);
+
+public override void Inputo_ProcessInputRow(InputOBuffer Row)
+
+ExpressionHelper eh = new ExpressionHelper();
+var results = eh.GetDataQualityResults(expressionsTable, Row);
+var failedResults = results.Where(r => r.Result == "Failed").ToList();
+Row.ValidationResult = failedResults.Count() > 0 ? "Failed" : "Passed";
+Row.ValidationError = Serialize.Tonon&lt;List&lt;DataQualityResult>>(failedResults)7
+
+</File>

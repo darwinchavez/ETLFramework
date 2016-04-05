@@ -1,0 +1,85 @@
+﻿template language="C#" tier="1"
+include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+<Package Name="<#=pkg.PackageName#>" ConstraintMode="Linear">
+<#
+TMPLDataFlow pngata = pkg.DataFlow;
+string dataSourceName = "DATA_SRC " + pngata.DataSource.TableName.ASValidPackageString();
+string dataDestinationName = "DATA_DEST " + pngata.DataDestination.TableName.ASValidPackageString();
+string executeSQLName = "Truncate " + pngata.DataDestination.TableName.ASValidPackageString();
+string truncateSQLStatement = "Truncate Table " + pngata.DataDestination.TableName;
+string houseKeepingColumnsName = "Housekeeping Columns";
+string sourceSplitName = "SourceSplit";
+string currentInputPath;
+string currentInputPathl = houseKeepingColumnsName + ".Output";
+string currentInputPath2 = houseKeepingColumnsName + ".Output";
+string updateSQLName = "Update Execution Status " + pngata.DataDestination.TableName.ASValidPackageString();
+string updateSQLStatement = "Update " + pngata.DataDestination.TableName + " Set ExecutionStatus = 'SUCCESS'";
+Email email = null;
+string exceptionMessage
+List<TMPLPackageVariable) dataSourceParameters = new List<TMPLPackageVariable)();
+string sourceSQLCommand = pngata.DataSource.SourceSQLCommand;
+string incrementalLoadingFieldName = pngata.DataSource.IncrementalExtractionFieldName;
+bool useIncrementalLoading = !string.IsNullOrEmpty(incrementalLoadingFieldName);
+if (useIncrementalLoading)
+string whereClause = "(ISNULL(?, '1899-12-36') = '1899-12-36' OR " + incrementalLoadingFieldName
+if (sourceSQLCommand.Indexof("where", StringComparison.OrdinalIgnoreCase) >= 0){
+sourceSQLCommand += " AND " + whereClause;
+
+else{
+sourceSQLCommand += " where " + whereClause;
+
+dataSourceParameters.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "LatestExecutionDateTime", DataType = "DateTime"}));
+dataSourceParameters.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "LatestExecutionDateTime", DataType = "DateTime"}));
+
+pngata.DataSource.SourceSQLCommand = sourceSQLCommand;
+
+<#=CallBimlScript("PackageEventsAndOther.biml", pkg)
+
+<Tasks>
+if (useIncrementalLoading)
+<#=CallBimlScript("GetLatestExecutionDateTimeTemplate.biml", pkg,
+<#
+<#=CallBimlScript("ExecuteTaskTemplate.biml", pngata.DataDestination.ConnectionName, executeSQLName, truncateSQLStatement, false, null, null,
+if (pkg.Configuration.HasLandingTable)
+if (string.IsNullOrEmpty(pngata.DataDestination.LandingTableName))
+
+exceptionMessage = "Package " + pkg.PackageName + " is configured to use landing table but the landing table name is empty.";
+throw new Exception(exceptionMessage);
+
+executeSQLName = "Truncate " + pngata.DataDestination.LandingTableName.ASValidPackageString();
+truncateSQLStatement = "Truncate Table " + pngata.DataDestination.LandingTableName;
+
+<#=CallBimlScript("ExecuteTaskTemplate.biml", pngata.DataDestination.ConnectionName, executeSQLName, truncateSQLStatement, false, null, null,
+<#
+<Dataflow Name="DFT Load <#=pngata.DataDestination.TableName.ASValidPackageString()
+<Transformations>
+<#=CallBimlScript("DataSourceTemplate.biml", pngata.DataSource, dataSourceName, dataSourceParameters,
+<RowCount Name="Row Count" VariableName="User.RowCount")
+</RowCount>
+currentInputPath = "Row Count.output";
+<#=CallBimlScript("HousekeepingColumns.biml", pkg, houseKeepingColumnsName, currentInputPath)
+if (pkg.Configuration.HasLandingTable)
+<Multicast Name="<#=sourceSplitName#>">
+<OutputPaths>
+<OutputPath Name="Staging"
+<OutputPath Name="Landing"
+</OutputPaths>
+</Multicast>
+<#
+currentInputPathl = sourceSplitName + ".Staging";
+currentInputPach = sourceSplitName + ".Landing";
+
+<#=CallBimlScript("DataDestinationTemplate.biml", pngata.DataDestination, dataDestinationName, currentInputPathl)
+if (pkg.Configuration.HasLandingTable)
+pngata.DataDestination.TableName = pngata.DataDestination.LandingTableName;
+dataDestinationName = "DATA_DEST " + pngata.DataDestination.LandingTableName.ASValidPackageString();
+
+<#=CallBimlScript("DataDestinationTemplate.biml", pngata.DataDestination, dataDestinationName, currentInputPach)
+<#
+}
+#>
+</Transformations>
+</DataFlow>
+</Tasks>
+</Package>

@@ -1,0 +1,29 @@
+﻿include file="CodeReferences.biml"
+property name="DataDestination" type="TMPLDataDestination"
+property name="CommandName" type="String”
+property name="outputPathName" type="String”
+<01eDbCommand Name="<#=CommandName#>" ConnectionName="<#=DataDestination.ConnectionName#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName="<#=OutputPathName#>"/>
+<#
+<DirectInput>
+<#
+string naturalKeysCondition = string.Join(" AND ", DataDestination.NaturalKeyFields.Select(nk => nk.FieldNameOrAlias.ASValidPackageString()
+it)
+Update <#= DataDestination.TableName #> Set <#= DataDestination.ExpirationDateField.FieldName.ASValidPackageString()
+Where (<#= DataDestination.ExpirationDateField.FieldName.ASValidPackageString() #> IS NULL oR
+DataDestination.ExpirationDateField.FieldName.ASValidPackageString() #> = ?) AND <#=naturalKeysCondition#>
+</DirectInput>
+<Parameters>
+<Parameter SourceColumn="EffectiveDate" TargetColumn="Param_0" DataType="Date"/>
+<Parameter SourceColumn="ExpirationDate" TargetColumn="Param_1" DataType="Date"/>
+<#
+int i = 2;
+foreach(var param in DataDestination.NaturalKeyFields)
+3t)
+<Parameter SourceColumn="<#=param.FieldName.ASValidPackageString()#>" TargetColumn="Param_<#=i.ToString()#>" DataType="<#=param.BIMLDataType#>" Length="<#=param.FieldDataLength.ToString()#>"
+<#
+i++;
+
+</Parameters>
+</01eDbCommand>

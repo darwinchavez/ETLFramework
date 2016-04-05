@@ -1,0 +1,39 @@
+﻿assembly name="System.windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934eo89"
+assembly name="CFC.DNA.ETL.Helper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f172efb139aef44"
+import namespace="CFC.DNA.ETL.Helper"
+import namespace="CFC.DNA.ETL.Helper.Model"
+import namespace="System.IO"
+import namespace="System.windows.Forms"
+import namespace="System.Reflection"
+<#+
+public TMPLEnvironment ProjectEnvironment {get; set;}
+Connections
+Connection CIS_Connection {get; set;}
+Connection ETL_Connection {get; set;}
+public void InitializeEnvironment()
+
+string visualStudioSolutionPath
+string visualStudioProjectPath
+string packagesPath = @"\\FILESERVER\apps\ETLFramework\Templates";
+var metadataFiles = new List<TMPLMetadataFilename)();
+metadataFiles.Add(new TMPLMetadataFilename() {FilePackageType = PackageType.Extraction, FileName = "Project_E_PackagesMetadata.json"});
+metadataFiles.Add(new TMPLMetadataFilename() {FilePackageType = PackageType.Transformation, FileName = "Project_T_PackagesMetadata.json"});
+metadataFiles.Add(new TMPLMetadataFilename() {FilePackageType = PackageType.Load, FileName = "Project_L_PackagesMetadata.json"});
+if (string.IsNullOrEmpty(visualStudioProjectPath))
+
+TBD: Get the path from BIDSHelper or BimlEngine if possible.
+throw new Exception("VisualStudioProjectPath is empty, check Environment Template.");
+
+ProjectEnvironment = new TMPLEnvironment(visualStudioSolutionPath, visualStudioProjectPath, metadataFiles, packagesPath);
+InitializeConnections();
+
+public void InitializeConnections()
+
+List<Connection> connectionsInProject = Helper.GetConnectionsFromBimlFile(ProjectEnvironment.LocalConnectionsTemplateFileName);
+ETL_Connection = connectionsInProject.FirstOrDefault(c => c.Name == "ETL");
+if (ETL_Connection == null)
+
+throw new Exception("ETL connection has not been defined/found");
+
+Initialize Connections
+CIS_Connection = connectionsInProject.FirstOrDefault(c => c.Name == "CIS");

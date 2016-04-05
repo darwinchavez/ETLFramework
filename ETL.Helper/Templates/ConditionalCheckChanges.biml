@@ -1,0 +1,39 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="DataDestination" type="TMPLDataDestination"
+property name="ConditionalSplitName" type="String"
+property name="FixedAttributeChangedConditionName" type="String"
+property name="ChangingAttributeChangedConditionName" type="String"
+property name="HistoricalAttributeChangedConditionName" type="String"
+property name="outputPathName" type="String"
+if(!string.IsNullOrEmpty(DataDestination.ListOfChangeTrackingFieldsAsAlias))
+var expressions = DataDestination.GetChangeTrackingFieldsAsExpression();
+
+<Conditiona1$plit Name:"<#=ConditionalSplitName#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName="<#=outputPathName#>"/>
+<#
+<OutputPaths>
+if (expressions.Keys.Contains(FieldChangingType.HistoricalAttribute))
+<OutputPath Name:"<#=HistoricalAttributeChangedConditionName#>">
+<Expression>
+<#=expressions[FieldChangingType.HistoricalAttribute]#>
+</Expression>
+</outputPath>
+<#
+if (expressions.Keys.Contains(FieldChangingType.ChangingAttribute))
+<OutputPath Name:"<#=ChangingAttributeChangedConditionName#>">
+<Expression>
+<#=expressions[FieldChangingType.ChangingAttribute]#>
+</Expression>
+</outputPath>
+<#
+if (expressions.Keys.Contains(FieldChangingType.FixedAttribute))
+<OutputPath Name:"<#=FixedAttributeChangedConditionName#>">
+<Expression>
+<#=expressions[FieldChangingType.FixedAttribute]#>
+</Expression>
+</outputPath>
+<#
+</OutputPaths>
+</ConditionalSplit>
+<# } #>

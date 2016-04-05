@@ -1,0 +1,17 @@
+﻿include file="CodeReferences.biml"
+property name="DerivedColumnsName" type="String”
+property name="DerivedColumns" type="List<TMPLPackageField>"
+property name="outputPathName" type="String”
+<#if(DerivedColumns != null && DerivedColumns.Count > 0)
+<DerivedColumns Name="<#=DerivedColumnsName#>">
+<Columns>
+foreach(var c in DerivedColumns)
+<Column Name="<#=c.Name#>" DataType="<#=c.BIMLDataType#>" ReplaceExisting="<#=c.ReplaceExisting.ToBimlString()#>"
+if (c.Length.HasValue)
+Length="<#=c.Length.Value.ToString()#>"
+<#
+><#=c.Expression#></Column>
+<#
+</Columns>
+</DerivedColumns>
+<#

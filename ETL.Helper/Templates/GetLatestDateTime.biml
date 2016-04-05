@@ -1,0 +1,19 @@
+﻿include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+property name="outputPathName" type="String"
+<#
+TMPLDataFlow pngata = pkg.DataFlow;
+string getPackageInfoExecuteSQLName = "Get Package Execution Info";
+string SSISConnectionName = pngata.DataSource.ConnectionName;
+string getPackageInfoVariableName = "User.GetPackageInfoSQL";
+List<TMPLPackageVariable) resultSetVariables = new List<TMPLPackageVariable)();
+resultSetVariables.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "ExecutionFolderName", DataType = "String"}));
+resultSetVariables.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "ExecutionProjectName", DataType = "String"}));
+resultSetVariables.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "ExecutionPackageName", DataType = "String"}));
+string getLatestExecutionDateTimeExecuteSQLName = "Get Latest Execution DateTime";
+string getLatestExecutionDateTimeVariableName = "User.GetLatestExecutionDateTimeSQL";
+List<TMPLPackageVariable) resultSetVariablesl = new List<TMPLPackageVariable)();
+resultSetVariablesl.Add(new TMPLPackageVariable(new TMPLPackageField() {Name = "LatestExecutionDateTime", DataType = "DateTime"}));
+
+<#=CallBimIScript("ExecuteTaskTemplate.biml", SSISConnectionName, getPackageInfoExecuteSQLName, getPackageInfoVariableName, true, "SingleRow", resultSetVariables,
+<#=CallBimIScript("ExecuteTaskTemplate.biml", SSISConnectionName, getLatestExecutionDateTimeExecuteSQLName, getLatestExecutionDateTimeVariableName, true, "SingleRow", resultSetVariablesl,

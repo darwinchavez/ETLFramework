@@ -1,0 +1,27 @@
+﻿k#@ include fi1e="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+<#
+We are assuming that MasterPackageflodel is [PackageName] : [Container], if the value changes to a complex object we have to cast accordingly.
+var containers = pkg.PackageContainers.Select(s => s.Va1ue).Distinct();
+string constraintMode = pkg.ExecutePackagesInParallel ? "Parallel" : "Linear";
+string childPackageName;
+3t)
+<Package Name="<#=pkg.PackageName#>" Constraintnode="Linear">
+<#=CallBimlScript("PackageEventsAndOther.biml", pkg)
+<Tasks>
+foreach (var containerName in containers)
+<Container Name="<#=containerName#>" Constraintnode="<#=constraintflode#>">
+<Tasks>
+foreach (var pmi in pkg.PackageContainers.Where(p => p.Value == containerName))
+childPackageName = pmi.Key;
+3t)
+<ExecutePackage Name="<#=chi1dPackageName#>">
+include fi1e="PackageParameterBindings.biml"
+<Externa1ProjectPackage Package="<#=chi1dPackageName#>.dtsx"></ExternalProjectPackage>
+</ExecutePackage>
+<#
+</Tasks>
+</Container>
+<#
+</Tasks>
+</Package>

@@ -1,0 +1,32 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="connectionName" type="String"
+property name="executeSQLName" type="String"
+property name="sqlStatementOrVariableName" type="String"
+property name="useVariableInput" type="Boolean"
+property name="resultSetType" type="String"
+property name="resultSetVariables" type="List<TMPLPackageVariable)"
+property name="outputPathName" type="String"
+<#
+string _resultSetType = (resultSetVariables == null II resultSetVariables.Count() == 0) ? "None" : resultSetType;
+
+<ExecuteSQL Name="<#=executeSQLName #>" ConnectionName="<#=connectionName#>" ResultSet="<#=_resultSetType#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName="<#=OutputPathName#>"/>
+<#
+if (useVariableInput)
+<VariableInput VariableName="<#=sqlStatementorVariableName#>"
+else
+<DirectInput>
+<#=sqlStatementorVariableName#>
+</DirectInput>
+<#
+if (resultSetVariables != null)
+<Results>
+int i = 0;
+foreach (TMPLPackageVariable resultSetVariable in resultSetVariables)
+<Result Name="<#=i.ToString()#>" VariableName="<#=resultSetVariable.FullName
+i++;
+
+</Results>
+<#
+</ExecuteSQL>

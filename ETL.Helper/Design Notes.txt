@@ -1,0 +1,22 @@
+﻿Distribute the Framework as a Visual Studio Add-In, like BIDS Helper (Maybe even incorporate it to BIDS Helper?)
+Include all the BIML templates into the Helper Project, this will keep them in sync with the code base
+Design all template classes to generate its Biml code and allow the code to be overwritten in its entirity
+Generate an SSIS package by aggregating all the Biml code from each of the classes in the hierarchy
+	Example
+		Project
+			Generate project connections and any other project scoped elements
+			For Each Package
+				Generate SSIS package and any other package scoped elements
+				For Each Task
+					For Each Data Flow
+						For Each ...
+
+
+Question?
+	Are we duplicating the class hierarchy already present in the Biml Engine ?
+	Where is the value in all of this code?
+		The predefined Biml templates and the json generation from database speeds up ETL development.
+
+TODO:
+	Interfaces vs Generics
+		How to use hierarchies and generics

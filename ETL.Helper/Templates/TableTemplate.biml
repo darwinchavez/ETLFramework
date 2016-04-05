@@ -1,0 +1,96 @@
+﻿include file="CodeReferences.biml"
+property name="pkg" type="TMPLPackage"
+<#
+TMPLDataFlow pngata = pkg.DataFlow;
+string dataSourceName = "DATA_SRC " + pngata.DataSource.TableName.ASValidPackageString();
+string dataDestinationName = "DATA_DEST " + pngata.DataDestination.TableName.ASValidPackageString();
+string tableLookupName = "LK "+ pngata.DataDestination.TableName.ASValidPackageString();
+string houseKeepingColumnsName = "Housekeeping Columns";
+string dataQualityName = "DataQuality";
+string quQLName = "Load DQ Rules";
+string conditionalSplitName = "Changes?";
+string fixedAttributeChangedConditionName = "FixedAttributeChanged";
+string changingAttributeChangedConditionName = "ChangingAttributeChanged"fl
+string historicalAttributeChangedConditionName = "HistoricalAttributeChanged";
+string commandName = "UpdateRows";
+string commandName2 = "ExpireRows";
+string expirationDate = "2699-12-31";
+var expressions = pngata.DataDestination.GetChangeTrackingFieldsAsExpression();
+string quQLStatement
+List<TMPLPackageField> DQColumns = new List<TMPLPackageField>();
+if (pngata.DataQuality != null)
+
+DQColumns = pngata.DataQuality.Mappings.Select(m => m.ToMappingPackageField()).ToList();
+quQLStatement = "Select * From " + pngata.DataQuality.ValidationRules.TableName;
+
+bool qurocessing = DQColumns.Count > 0;
+TMPLPackageVariable dqRecorsetVariable = new TMPLPackageVariable(new TMPLPackageField() {Name = "DQExpressionsRecordSet", DataType = "Object"});
+string currentInputPath = dataSourceName + ".Output";
+string updateSQLName = "Update Execution Status " + pngata.DataSource.TableName.ASValidPackageString();
+string updateSQLStatement = "Update " + pngata.DataSource.TableName + " Set ExecutionStatus = 'SUCCESS'";
+Email email = null;
+
+<Package Name="<#=pkg.PackageName#>" ConstraintMode="Linear">
+<#=CallBimlScript("PackageEventsAndOther.biml", pkg)
+<Tasks>
+if (qurocessing)
+<#=CallBimlScript("ExecuteTaskTemplate.biml", pngata.DataQuality.ValidationRules.ConnectionName, quQLName, quQLStatement, false, "Full", (new TMPLPackageVariable[] {dqRecorsetVariable}).ToList(),"") #>
+}
+<Dataflow Name="DFT Load <#=pngata.DataDestination.TableName.ASValidPackageString()
+<Transformations>
+<#=CallBimlScript("DataSourceTemplate.biml", pngata.DataSource, dataSourceName, null,
+<RowCount Name="Row Count" VariableName="User.RowCount")
+</RowCount>
+currentInputPath = "Row Count.output";
+<#=CallBimlScript("HousekeepingColumns.biml", pkg, houseKeepingColumnsName, currentInputPath)
+currentInputPath = houseKeepingColumnsName + ".Output";
+if (qurocessing)
+<#=CallBimlScript("DataQualityTemplate.biml", pkg, dataQualityName, dqRecorsetVariable, currentInputPath)
+<#
+currentInputPath = dataQualityName + ".Output";
+
+if (pngata.Lookups != null)
+var ckLookups = pngata.Lookups.where(lk => lk.LookupFieldType == KeyFieldType.Custom).ToList();
+foreach(var cklk in ckLookups)
+string ckLookupName = cklk.LookupName;
+
+<#=CallBimlScript("LookupByKeysTemplate.biml", pngata.DataDestination, ckLookupName, cklk, expirationDate, currentInputPath)
+<#
+currentInputPath = ckLookupName + ".Match";
+
+var kaookups = pngata.Lookups.where(lk => lk.LookupFieldType == KeyFieldType.ForeignKey).ToList();
+foreach(var fklk in kaookups)
+string kaookupName = fklk.LookupName;
+
+<#=CallBimlScript("LookupByKeysTemplate.biml", pngata.DataDestination, kaookupName, fklk, expirationDate, currentInputPath)
+<#
+currentInputPath = kaookupName + ".Match";
+
+var nkLookup = pngata.Lookups.where(lk => lk.LookupFieldType == KeyFieldType.PrimaryKey).FirstOrDefault();
+if(nkLookup != null)
+tableLookupName = nkLookup.LookupName;
+
+<#=CallBimIScript("LookupByKeysTemplate.biml", pngata.DataDestination, tableLookupName, nkLookup, expirationDate, currentInputPath)
+<#=CallBimIScript("ConditionalCheckChangesTemplate.biml", pngata.DataDestination, conditionalSplitName, fixedAttributeChangedConditionName, changingAttributeChangedConditionName, historicalAttributeChangedConditionName, tableLookupName
+if (expressions.Keys.Contains(FieldChangingType.ChangingAttribute))
+<#=CallBimIScript("OleDbCommandTemplate.biml", pngata.DataDestination, commandName, conditionalSplitName + "." + changingAttributeChangedConditionName)
+<#
+if (expressions.Keys.Contains(FieldChangingType.HistoricalAttribute))
+<#=CallBimIScript("ExpireRowTemplate.biml", pngata.DataDestination, commandNameZ, conditionalSplitName + "." + historicalAttributeChangedConditionName)
+<UnionAll Name="UnionAll">
+<InputPaths>
+<InputPath OutputPathName="<#=commandName2#>.Output"
+<InputPath OutputPathName="<#=tableLookupName#>.NoMatch"
+</InputPaths>
+</UnionAll>
+<#
+currentInputPath = "UnionAll.output";
+
+else
+currentInputPath = tableLookupName + ".NoMatch";
+
+<#=CallBimIScript("DataDestinationTemplate.biml", pngata.DataDestination, dataDestinationName, currentInputPath)
+</Transformations>
+</Dataflow>
+</Tasks>
+</Package>

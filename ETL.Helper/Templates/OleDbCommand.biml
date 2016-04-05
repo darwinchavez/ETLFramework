@@ -1,0 +1,26 @@
+﻿include file="CodeReferences.biml"
+property name="DataDestination" type="TMPLDataDestination"
+property name="CommandName" type="String”
+property name="outputPathName" type="String”
+<01eDbCommand Name="<#=CommandName#>" ConnectionName="<#=DataDestination.ConnectionName#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName="<#=OutputPathName#>"/>
+<#
+<DirectInput>
+DataDestination.UpdateSQLCommand
+</DirectInput>
+<Parameters>
+<#
+int i = 0;
+foreach(var param in DataDestination.UpdateParameters)
+3t)
+<Parameter SourceColumn="<#=param.FieldName.ASValidPackageString()#>" TargetColumn="Param_<#=i.ToString()#>" DataType="<#=param.BIflLDataType#>"
+if (param.FieldDataLength.HasValue)
+Length="<#=param.FieldDataLength.Value.ToString()#>"
+<#
+
+<#
+i++;
+
+</Parameters>
+</01eDbCommand>

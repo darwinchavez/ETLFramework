@@ -1,0 +1,78 @@
+﻿include file="CodeReferences.biml"
+property name="DataDestination" type="TMPLDataDestination"
+property name="lookupName" type="String"
+property name="Lookup" type="TMPLLookup"
+property name="ExpirationDate" type="String"
+property name="outputPathName" type="String"
+<#
+string exceptionMngemplate = "{0} => ConnectionName: {1}, DataDestination TableName: {2}, Lookup Name: {3}";
+string exceptionMsg;
+if (Lookup.KeyFields == null II Lookup.KeyFields.Count() == 0)
+exceptionMsg = String.Format(exceptionMngemplate
+(Lookup.LookupFieldType == KeyFieldType.PrimaryKey ? "PrimaryKey" : "ForeignKey") + " field(s) not defined"
+Lookup.ConnectionName
+DataDestination.TableName
+Lookup.LookupName);
+throw new Exception(exceptionMsg);
+
+if (Lookup.LookupFields == null II Lookup.LookupFields.Count() == 0)
+exceptionMsg = String.Format(exceptionMngemplate
+(Lookup.LookupFieldType == KeyFieldType.PrimaryKey ? "NaturalKey" : "ForeignKey's lookup") + " field(s) not defined"
+Lookup.ConnectionName
+DataDestination.TableName
+Lookup.LookupName);
+throw new Exception(exceptionMsg);
+
+if (string.IsNullOrEmpty(Lookup.TableName))
+
+exceptionMsg = String.Format(exceptionMngemplate
+Lookup TableName Error"
+Lookup.ConnectionName
+DataDestination.TableName
+Lookup.LookupName);
+throw new Exception(exceptionMsg);
+
+var allLookupFields = Lookup.KeyFields.Union(Lookup.LookupFields).ToList();
+var distinctLookupFields = allLookupFields.DistinctBy(f => f.FieldName.FieldNameAsAlias).ToList();
+if (distinctLookupFields.Count() < allLookupFields.Count())
+
+exceptionMsg = String.Format(exceptionMngemplate
+Lookup Error: KeyFields and LookupFields MUST be different, try aliasing KeyFields FieldName"
+Lookup.ConnectionName
+DataDestination.TableName
+Lookup.LookupName);
+throw new Exception(exceptionMsg);
+
+string lookupFieldsAsCommaDelimitedList = allLookupFields.Select(1kf => lkf.FieldName.FieldNameAsAlias).AsDelimitedList();
+
+<Lookup Name="<#=lookupName#>" OleDbConnectionName="<#=Lookup.ConnectionName#>" NoMatchBehavior="<#=Lookup.LookupNoMatchBehaviour.ToString()#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName="<#=OutputPathName#>"/>
+<#}#>
+<DirectInput>
+Select <#=lookupFieldsAsCommaDelimitedList#>
+if(Lookup.LookupFieldType == KeyFieldType.PrimaryKey && !string.IsNullOrEmpty(DataDestination.ListOfChangeTrackingFieldsAsAlias))
+<#=DataDestination.ListOfChangeTrackingFieldsAsAlias#>
+<#}#>
+From <#=Lookup.Tab1eName#>
+if (Lookup.LookupFie1dType == KeyFieldType.PrimaryKey && DataDestination.ChangingType == TableChangingType.Historicalchange)
+where ISNULL(ExpirationDate,<#=ExpirationDate.EncloseInSingleQuotes()#>) = <#=ExpirationDate.EncloseInSingleQuotes()#>
+<#}#>
+</DirectInput>
+<Inputs>
+foreach(var k in Lookup.LookupFie1ds)
+<Column SourceColumn="<#=k.FieldName.FieldNameOrAlias.ASValidPackageString()#>" TargetColumn="<#=k.FieldName.FieldNameOrAlias.ASValidPackageString()#>"
+<#}#>
+</Inputs>
+<Outputs>
+<#
+foreach(var k in Lookup.KeyFie1ds)
+<Column SourceColumn="<#=k.FieldName.FieldNameOrAlias.ASValidPackageString()#>" TargetColumn="<#=k.FieldName.FieldNameOrAlias.ASValidPackageString()#>"
+<#
+if(Lookup.LookupFieldType == KeyFieldType.PrimaryKey && !string.IsNullOrEmpty(DataDestination.ListOfChangeTrackingFieldsAsAlias))
+foreach(var cf in DataDestination.ChangeTrackingFields)
+<Column SourceColumn="<#=cf.FieldName.FieldNameOrAlias.ASValidPackageString()#>" TargetColumn="<#=DataDestination.ExistingFieldPrefix+cf.FieldName.FieldNameOrAlias.ASValidPackageString()#>"
+<#
+
+</Outputs>
+</Lookup>

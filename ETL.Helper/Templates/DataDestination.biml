@@ -1,0 +1,17 @@
+﻿include fi1e="CodeReferences.biml"
+property name="DataDestination" type="TMPLDataDestination"
+property name="DataDestinationName" type="String”
+property name="outputPathName" type="String”
+<#
+bool useFastLoadIfAvailable = DataDestination.UseFastLoadIfAvailable.HasValue ? DataDestination.UseFastLoadIfAvailable.Value : true;
+bool alwaysUseDefaultCodePage= DataDestination.AlwaysUseDefaultCodePage.HasValue ? DataDestination.AlwaysUseDefaultCodePage.Value : false;
+bool validateExternalMetadata = DataDestination.ValidateExternalMetadata.HasValue ? DataDestination.ValidateExternalMetadata.Value : true;
+it)
+<<#=DataDestination.ConnectionType.ToString()#> Name="<#=DataDestinationName#>" ConnectionName="<#=DataDestination.ConnectionName#>"
+UseFastLoadIfAvailable = "<#=useFastLoadIfAvailable.ToBimlString()#>" AlwaysUseDefaultCodePage = "<#=alwaysUseDefaultCodePage.ToBimlString()#>"
+ValidateExternalMetadata = "<#=validateExternalMetadata.ToBimlString()#>"
+if (!string.IsNullOrEmpty(OutputPathName))
+(InputPath OutputPathName="<#=OutputPathName#>"/>
+<#
+(ExternalTableOutput Tab1e="<#=DataDestination.TableName#>"/>
+</<#=DataDestination.ConnectionType.ToString()#>>I

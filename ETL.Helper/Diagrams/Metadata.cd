@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ETL.Helper.Model.Metadata.Entity&lt;EntityNameType, EntityPropertyType, EntityPropertyNameType&gt;" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAACAAACAQA=</HashCode>
+      <FileName>Model\Metadata\Entity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Associations" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ETL.Helper.Model.Metadata.DatabaseTable">
+    <Position X="3.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Metadata\DatabaseTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ETL.Helper.Model.Metadata.MetadataRoot" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Metadata\MetadataRoot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ETL.Helper.Model.Metadata.EntityProperty&lt;NameType&gt;" Collapsed="true">
+    <Position X="6.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Metadata\EntityProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ETL.Helper.Model.Metadata.DatabaseField" Collapsed="true">
+    <Position X="6.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Metadata\DatabaseField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

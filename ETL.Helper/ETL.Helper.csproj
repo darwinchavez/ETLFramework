@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CF44C1B3-9A7B-4B15-A15C-A113B25D0C67}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ETL.Helper</RootNamespace>
+    <AssemblyName>ETL.Helper</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller\BaseController.cs" />
+    <Compile Include="Controller\DatabaseController.cs" />
+    <Compile Include="Controller\CommonController.cs" />
+    <Compile Include="Controller\HelperController.cs" />
+    <Compile Include="Controller\RestServiceController.cs" />
+    <Compile Include="Controller\SalesForceController.cs" />
+    <Compile Include="Controller\WebServiceController.cs" />
+    <Compile Include="Extensions\DataRowExtensions.cs" />
+    <Compile Include="Extensions\OleDbExtensions.cs" />
+    <Compile Include="Extensions\SerializationExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Model\Metadata\Authentication\AuthenticationToken.cs" />
+    <Compile Include="Model\Metadata\Authentication\Credential.cs" />
+    <Compile Include="Model\Metadata\Database\Database.cs" />
+    <Compile Include="Model\Metadata\Database\OleDbColumnSchema.cs" />
+    <Compile Include="Model\Metadata\Database\OleDbDataType.cs" />
+    <Compile Include="Model\Metadata\Database\OleDbKeyInfoSchema.cs" />
+    <Compile Include="Model\Metadata\Database\OleDbMetadataRestriction.cs" />
+    <Compile Include="Model\Metadata\Database\OleDbTableSchema.cs" />
+    <Compile Include="Model\Metadata\DataTypeMapping.cs" />
+    <Compile Include="Model\Metadata\Enums.cs" />
+    <Compile Include="Model\Metadata\EntityCatalog.cs" />
+    <Compile Include="Model\Metadata\Database\DatabaseField.cs" />
+    <Compile Include="Model\Metadata\Database\DatabaseFieldName.cs" />
+    <Compile Include="Model\Metadata\Database\DatabaseTable.cs" />
+    <Compile Include="Model\Metadata\Database\DatabaseTableName.cs" />
+    <Compile Include="Model\Metadata\Entity.cs" />
+    <Compile Include="Model\Metadata\EntityName.cs" />
+    <Compile Include="Model\Metadata\EntityProperty.cs" />
+    <Compile Include="Model\Metadata\EntityPropertyName.cs" />
+    <Compile Include="Model\Metadata\EntityPropertyDataType.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IEntity.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IEntityController.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IEntityName.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IEntityProperty.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IEntityPropertyDataType.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IMetadataRestriction.cs" />
+    <Compile Include="Model\Metadata\Interfaces\IMetadataName.cs" />
+    <Compile Include="Model\Metadata\MetadataRoot.cs" />
+    <Compile Include="Model\Metadata\MetadataName.cs" />
+    <Compile Include="Model\Metadata\Schema.cs" />
+    <Compile Include="Model\Metadata\WebService\SalesForceColumnSchema.cs" />
+    <Compile Include="Model\Metadata\WebService\SalesForceDataType.cs" />
+    <Compile Include="Model\Metadata\WebService\WebResource.cs" />
+    <Compile Include="Model\Root.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Templates\MasterPackage.biml" />
+    <None Include="Templates\DataSource.biml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Design Notes.txt" />
+    <None Include="Templates\DataDestination.biml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagrams\Metadata.cd" />
+    <None Include="Templates\dataquality.biml" />
+    <None Include="Templates\DerivedColumns.biml" />
+    <None Include="Templates\DQScriptComponent.biml" />
+    <None Include="Templates\ExecuteTask.biml" />
+    <None Include="Templates\ExpireRow.biml" />
+    <None Include="Templates\ExtractionTemplate.biml" />
+    <None Include="Templates\ConditionalCheckChanges.biml" />
+    <None Include="Templates\GetLatestDateTime.biml" />
+    <None Include="Templates\HousekeepingColumns.biml" />
+    <None Include="Templates\HousekeepingVariables.biml" />
+    <None Include="Templates\LookupByKeys.biml" />
+    <None Include="Templates\OleDbCommand.biml" />
+    <None Include="Templates\PackageEventsAndOther.biml" />
+    <None Include="Templates\ProjectEnvironment.biml" />
+    <None Include="Templates\TableTemplate.biml" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ETL.Services\ETL.Services.csproj">
+      <Project>{3050707b-1bd4-4e9b-8d2d-ebf0d0f8cff4}</Project>
+      <Name>ETL.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,26 @@
+﻿k#@ include file="CodeReferences.biml"
+property name="pkg" type=”TMPLPackage"
+include file="PackageParameters.biml”
+<Variables>
+<#=CallBimlScript("HousekeepingVariables.biml”, pkg)
+if (pkg.Variables != null 88 !String.IsNullOrEmpty(pkg.Variables.InnerBIML))
+string variablesFilePath = ”Variables_InnerBiml.biml”;
+System.IO.File.writeAllText(variablesFilePath, pkg.Variables.InnerBIML);
+
+<#=CallBimlScript(variablesFilePath)
+<#}#>
+</Variables>
+<Events>
+if (pkg.Events != null)
+foreach(var e in pkg.Events)
+if (!String.IsNullOrEmpty(e.InnerBIML))
+(Event EventType="<#=e.EventType.ToString()#>" Name=”<#=e.EventType.ToString()#>" ConstraintMode="Linear">
+(4!
+string eventsFilePath = ”Events_InnerBiml.biml";
+System.IO.File.WriteAllText(eventsFilePath, e.InnerBIML);
+
+<#=CallBimlScript(eventsFilePath)
+</Event>
+<#
+
+</Events>

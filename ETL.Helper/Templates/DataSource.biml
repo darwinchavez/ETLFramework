@@ -1,0 +1,25 @@
+﻿k#@ template language="C#" tier="0"
+include file="CodeReferences.biml"
+property name = "DataSource" type="TMPLDataSource"
+property name = "DataSourceName" type="String”
+property name = "parameterVariables" type="List<TMPLPackageVariable)"
+property name = "outputPathName" type="String”
+<<#=DataSource.ConnectionType.ToString()#> Name="<#=DataSourceName#>" ConnectionName="<#=DataSource.ConnectionName#>">
+if (!string.IsNullOrEmpty(OutputPathName))
+<InputPath OutputPathName = "<#=OutputPathName#>" />
+<#
+if (DataSource.IsSourceSQLCommand)
+<DirectInput><#=DataSource.SourceSQLCommand#></DirectInput>
+if (parameterVariables != null)
+<Parameters>
+int i = 0;
+foreach (TMPLPackageVariable parameterVariable in parameterVariables)
+<Parameter Name = "<#=i.ToString()#>" VariableName="<#=parameterVariable.FullName
+i++;
+
+</Parameters>
+<#
+else
+<Externa1Tab1eInput Table = "<#=DataSource.TableName#>" />
+<#
+</<#=DataSource.ConnectionType.ToString()#>>
